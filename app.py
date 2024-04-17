@@ -3,12 +3,12 @@ import sqlite3
 
 app = Flask(__name__)
 
-# SQLite database setup
+# Db conn
 conn = sqlite3.connect('address_book.db')
 c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS records
              (name TEXT PRIMARY KEY, address TEXT)''')
-conn.execute('PRAGMA journal_mode = WAL')  # Enable WAL mode
+conn.execute('PRAGMA journal_mode = WAL')
 conn.commit()
 conn.close()
 
