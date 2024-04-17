@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address Book</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding-top: 40px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: calc(50% - 5px);
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: transparent;
+            font-size: 18px;
+        }
+        button:hover {
+            background-color: #f2f2f2;
+        }
+        .edit-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .edit-form input[type="text"],
+        .edit-form button {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+</head>
+<body>
+    <div class="container">
+        <h1>Address Book</h1>
+        <form action="/add" method="post">
+            <input type="text" id="name" name="name" placeholder="Enter name" required>
+            <input type="text" id="address" name="address" placeholder="Enter address" required>
+            <div class="actions">
+                <button type="submit"><i class="fas fa-plus"></i></button>
+            </div>
+        </form>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+            {% for record in records %}
+            <tr>
+                <td>{{ record[0] }}</td>
+                <td>{{ record[1] }}</td>
+                <td>
+                    <div class="actions">
+                        <button class="edit-btn"><i class="fas fa-pencil-alt"></i></button>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="name" value="{{ record[0] }}">
+                            <button type="submit"><i class="fas fa-trash-alt"></i></button>
+                        </form>
+                    </div>
+                    <!-- Hidden edit form -->
+                    <div class="edit-form">
+                        <form action="/update" method="post">
+                            <input type="hidden" name="name" value="{{ record[0] }}">
+                            <input type="text" name="address" value="{{ record[1] }}">
+                            <button type="submit"><i class="fas fa-check"></i></button>
+                            <button type="button" class="cancel-btn"><i class="fas fa-times"></i></button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <form action="/reset_all" method="post">
+            <button type="submit"><i class="fas fa-sync-alt"></i> Reset All Records</button>
+        </form>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editBtns = document.querySelectorAll('.edit-btn');
+            const cancelBtns = document.querySelectorAll('.cancel-btn');
+
+            editBtns.forEach(function(editBtn) {
+                editBtn.addEventListener('click', function() {
+                    const editForm = this.parentNode.nextElementSibling;
+                    editForm.style.display = 'block';
+                });
+            });
+
+            cancelBtns.forEach(function(cancelBtn) {
+                cancelBtn.addEventListener('click', function() {
+                    const editForm = this.parentNode.parentNode;
+                    editForm.style.display = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
